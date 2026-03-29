@@ -9,7 +9,7 @@ export default function AdminDashboard({ user }) {
 
   // Students
   const [students, setStudents] = useState([])
-  const [studentForm, setStudentForm] = useState({ erp: '', name: '', email: '' })
+  const [studentForm, setStudentForm] = useState({ erp: '', name: '', email: '', password: '' })
 
   // PO Members
   const [poMembers, setPOMembers] = useState([])
@@ -21,7 +21,7 @@ export default function AdminDashboard({ user }) {
 
   // Rooms
   const [rooms, setRooms] = useState([])
-  const [roomForm, setRoomForm] = useState({ name: '', building_id: '', capacity: '' })
+  const [roomForm, setRoomForm] = useState({ name: '', building_id: '', capacity: '', type: '' })
 
   // Bookings
   const [bookings, setBookings] = useState([])
@@ -66,12 +66,14 @@ export default function AdminDashboard({ user }) {
     e.preventDefault()
     try {
       await api.users.create({
-        ...studentForm,
-        role: 'student',
-        password: 'tempPassword123'
+        erp: studentForm.erp,
+        name: studentForm.name,
+        email: studentForm.email,
+        password: studentForm.password,
+        role: 'student'
       })
       setSuccess('Student added successfully')
-      setStudentForm({ erp: '', name: '', email: '' })
+      setStudentForm({ erp: '', name: '', email: '', password: '' })
       await loadAllData()
       setTimeout(() => setSuccess(''), 2000)
     } catch (err) {
@@ -134,7 +136,7 @@ export default function AdminDashboard({ user }) {
         capacity: parseInt(roomForm.capacity)
       })
       setSuccess('Room added successfully')
-      setRoomForm({ name: '', building_id: '', capacity: '' })
+      setRoomForm({ name: '', building_id: '', capacity: '', type: '' })
       await loadAllData()
       setTimeout(() => setSuccess(''), 2000)
     } catch (err) {
@@ -192,31 +194,31 @@ export default function AdminDashboard({ user }) {
   return (
     <div className="admin-dashboard">
       <div className="admin-tabs">
-        <button 
+        <button
           className={`tab ${tab === 'students' ? 'active' : ''}`}
           onClick={() => setTab('students')}
         >
           Students
         </button>
-        <button 
+        <button
           className={`tab ${tab === 'po' ? 'active' : ''}`}
           onClick={() => setTab('po')}
         >
           PO Members
         </button>
-        <button 
+        <button
           className={`tab ${tab === 'buildings' ? 'active' : ''}`}
           onClick={() => setTab('buildings')}
         >
           Buildings
         </button>
-        <button 
+        <button
           className={`tab ${tab === 'rooms' ? 'active' : ''}`}
           onClick={() => setTab('rooms')}
         >
           Rooms
         </button>
-        <button 
+        <button
           className={`tab ${tab === 'bookings' ? 'active' : ''}`}
           onClick={() => setTab('bookings')}
         >
@@ -231,7 +233,7 @@ export default function AdminDashboard({ user }) {
       {tab === 'students' && (
         <div className="admin-section">
           <h2>Manage Students</h2>
-          
+
           <div className="form-card">
             <h3>Add New Student</h3>
             <form onSubmit={handleAddStudent}>
@@ -240,24 +242,34 @@ export default function AdminDashboard({ user }) {
                   type="text"
                   placeholder="ERP"
                   value={studentForm.erp}
-                  onChange={(e) => setStudentForm({...studentForm, erp: e.target.value})}
+                  onChange={(e) => setStudentForm({ ...studentForm, erp: e.target.value })}
                   required
                 />
                 <input
                   type="text"
                   placeholder="Full Name"
                   value={studentForm.name}
-                  onChange={(e) => setStudentForm({...studentForm, name: e.target.value})}
+                  onChange={(e) => setStudentForm({ ...studentForm, name: e.target.value })}
                   required
                 />
               </div>
-              <input
-                type="email"
-                placeholder="Email"
-                value={studentForm.email}
-                onChange={(e) => setStudentForm({...studentForm, email: e.target.value})}
-                required
-              />
+              <div className='form-row'>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={studentForm.email}
+                  onChange={(e) => setStudentForm({ ...studentForm, email: e.target.value })}
+                  required
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={studentForm.password}
+                  onChange={(e) => setStudentForm({ ...studentForm, password: e.target.value })}
+                  required
+                />
+              </div>
+
               <button type="submit">Add Student</button>
             </form>
           </div>
@@ -294,7 +306,7 @@ export default function AdminDashboard({ user }) {
       {tab === 'po' && (
         <div className="admin-section">
           <h2>Manage Program Office Members</h2>
-          
+
           <div className="form-card">
             <h3>Add New PO Member</h3>
             <form onSubmit={handleAddPO}>
@@ -303,14 +315,14 @@ export default function AdminDashboard({ user }) {
                   type="text"
                   placeholder="ERP"
                   value={poForm.erp}
-                  onChange={(e) => setPoForm({...poForm, erp: e.target.value})}
+                  onChange={(e) => setPoForm({ ...poForm, erp: e.target.value })}
                   required
                 />
                 <input
                   type="text"
                   placeholder="Full Name"
                   value={poForm.name}
-                  onChange={(e) => setPoForm({...poForm, name: e.target.value})}
+                  onChange={(e) => setPoForm({ ...poForm, name: e.target.value })}
                   required
                 />
               </div>
@@ -319,14 +331,14 @@ export default function AdminDashboard({ user }) {
                   type="email"
                   placeholder="Email"
                   value={poForm.email}
-                  onChange={(e) => setPoForm({...poForm, email: e.target.value})}
+                  onChange={(e) => setPoForm({ ...poForm, email: e.target.value })}
                   required
                 />
                 <input
                   type="password"
                   placeholder="Password"
                   value={poForm.password}
-                  onChange={(e) => setPoForm({...poForm, password: e.target.value})}
+                  onChange={(e) => setPoForm({ ...poForm, password: e.target.value })}
                   required
                 />
               </div>
@@ -366,7 +378,7 @@ export default function AdminDashboard({ user }) {
       {tab === 'buildings' && (
         <div className="admin-section">
           <h2>Manage Buildings</h2>
-          
+
           <div className="form-card">
             <h3>Add New Building</h3>
             <form onSubmit={handleAddBuilding}>
@@ -375,14 +387,14 @@ export default function AdminDashboard({ user }) {
                   type="text"
                   placeholder="Building Name"
                   value={buildingForm.name}
-                  onChange={(e) => setBuildingForm({...buildingForm, name: e.target.value})}
+                  onChange={(e) => setBuildingForm({ ...buildingForm, name: e.target.value })}
                   required
                 />
                 <input
                   type="text"
                   placeholder="Location"
                   value={buildingForm.location}
-                  onChange={(e) => setBuildingForm({...buildingForm, location: e.target.value})}
+                  onChange={(e) => setBuildingForm({ ...buildingForm, location: e.target.value })}
                   required
                 />
               </div>
@@ -409,7 +421,7 @@ export default function AdminDashboard({ user }) {
                       <td>{b.name}</td>
                       <td>{b.location}</td>
                       <td>
-                        <button 
+                        <button
                           className="btn-delete"
                           onClick={() => handleDeleteBuilding(b.id)}
                         >
@@ -429,7 +441,7 @@ export default function AdminDashboard({ user }) {
       {tab === 'rooms' && (
         <div className="admin-section">
           <h2>Manage Rooms</h2>
-          
+
           <div className="form-card">
             <h3>Add New Room</h3>
             <form onSubmit={handleAddRoom}>
@@ -438,12 +450,12 @@ export default function AdminDashboard({ user }) {
                   type="text"
                   placeholder="Room Name"
                   value={roomForm.name}
-                  onChange={(e) => setRoomForm({...roomForm, name: e.target.value})}
+                  onChange={(e) => setRoomForm({ ...roomForm, name: e.target.value })}
                   required
                 />
-                <select 
+                <select
                   value={roomForm.building_id}
-                  onChange={(e) => setRoomForm({...roomForm, building_id: e.target.value})}
+                  onChange={(e) => setRoomForm({ ...roomForm, building_id: e.target.value })}
                   required
                 >
                   <option value="">Select Building</option>
@@ -452,13 +464,26 @@ export default function AdminDashboard({ user }) {
                   ))}
                 </select>
               </div>
-              <input
-                type="number"
-                placeholder="Capacity"
-                value={roomForm.capacity}
-                onChange={(e) => setRoomForm({...roomForm, capacity: e.target.value})}
-                required
-              />
+              <div className="form-row">
+                <input
+                  type="number"
+                  placeholder="Capacity"
+                  value={roomForm.capacity}
+                  onChange={(e) => setRoomForm({ ...roomForm, capacity: e.target.value })}
+                  required
+                />
+                <select
+                  value={roomForm.type}
+                  onChange={(e) => setRoomForm({ ...roomForm, type: e.target.value })}
+                  required
+                >
+                  <option value="">Select Room Type</option>
+                  <option value="Classroom">Classroom</option>
+                  <option value="Seminar Hall">Seminar Hall</option>
+                  <option value="Computer Lab">Computer Lab</option>
+                  <option value="Meeting Room">Meeting Room</option>
+                </select>
+              </div>
               <button type="submit">Add Room</button>
             </form>
           </div>
@@ -484,7 +509,7 @@ export default function AdminDashboard({ user }) {
                       <td>{r.buildings?.name}</td>
                       <td>{r.capacity}</td>
                       <td>
-                        <button 
+                        <button
                           className="btn-delete"
                           onClick={() => handleDeleteRoom(r.id)}
                         >
@@ -504,27 +529,27 @@ export default function AdminDashboard({ user }) {
       {tab === 'bookings' && (
         <div className="admin-section">
           <h2>Manage Booking Requests</h2>
-          
+
           <div className="filter-section">
-            <button 
+            <button
               className={`filter-btn ${filterStatus === 'pending' ? 'active' : ''}`}
               onClick={() => setFilterStatus('pending')}
             >
               Pending Requests
             </button>
-            <button 
+            <button
               className={`filter-btn ${filterStatus === 'approved' ? 'active' : ''}`}
               onClick={() => setFilterStatus('approved')}
             >
               Approved
             </button>
-            <button 
+            <button
               className={`filter-btn ${filterStatus === 'rejected' ? 'active' : ''}`}
               onClick={() => setFilterStatus('rejected')}
             >
               Rejected
             </button>
-            <button 
+            <button
               className={`filter-btn ${filterStatus === '' ? 'active' : ''}`}
               onClick={() => setFilterStatus('')}
             >
@@ -570,13 +595,13 @@ export default function AdminDashboard({ user }) {
                       <td className="actions">
                         {booking.status === 'pending' && (
                           <>
-                            <button 
+                            <button
                               className="btn-approve"
                               onClick={() => handleApproveBooking(booking.id)}
                             >
                               Approve
                             </button>
-                            <button 
+                            <button
                               className="btn-reject"
                               onClick={() => handleRejectBooking(booking.id)}
                             >
@@ -585,7 +610,7 @@ export default function AdminDashboard({ user }) {
                           </>
                         )}
                         {booking.status === 'approved' && (
-                          <button 
+                          <button
                             className="btn-cancel"
                             onClick={() => handleCancelBooking(booking.id)}
                           >
